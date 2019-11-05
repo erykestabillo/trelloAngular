@@ -128,8 +128,8 @@ class CardViewSet(viewsets.ViewSet):
         serializer = self.serializer_class(card,many=True)  
         return Response(serializer.data)
     
-    def post(self, request):        
-        serializer = self.serializer_class(data=request.data)        
+    def post(self, request, **kwargs):
+        serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()            
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -145,7 +145,7 @@ class CardDetail(viewsets.ViewSet):
         except Board.DoesNotExist:
             raise Http404
 
-    def get(self, request,**kwargs):
+    def get(self, request,**kwargs):        
         board_list = self.get_object(kwargs.get('card_id'))
         serializer = self.serializer_class(board_list)
         return Response(serializer.data)

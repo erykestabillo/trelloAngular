@@ -35,7 +35,7 @@ class ListCard(models.Model):
     title = models.CharField(max_length=50)
     description = models.TextField(max_length=200, null=True)
     date_created = models.DateTimeField(default=timezone.now)
-    board_list = models.ForeignKey(BoardList, on_delete=models.CASCADE, null=True)
+    board_list = models.ForeignKey(BoardList, on_delete=models.CASCADE)
     is_archived = models.BooleanField(default=False)
     
     def __str__(self):
@@ -44,14 +44,14 @@ class ListCard(models.Model):
 
 class BoardInvite(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid4, editable=False)
-    board = models.ForeignKey(Board, on_delete=models.CASCADE, null=True)
+    board = models.ForeignKey(Board, on_delete=models.CASCADE)
     email = models.EmailField(max_length=255,unique=True)
 
 
 
 class BoardMembers(models.Model):
     member = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
-    board = models.ForeignKey(Board, on_delete=models.CASCADE, null=True)
+    board = models.ForeignKey(Board, on_delete=models.CASCADE)
     
     def __str__(self):
         return str(self.member)

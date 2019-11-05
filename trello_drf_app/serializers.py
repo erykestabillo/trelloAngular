@@ -16,17 +16,17 @@ class ListSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = BoardList
-        fields = ("__all__")
+        fields = ('id',
+                  'title',
+                  'date_created')
 
 
 class CardSerializer(serializers.ModelSerializer):    
     
     class Meta:
         model = ListCard
-        fields = ('id',
-                'title',
-                'description',
-                'date_created',)
+        fields = ("__all__")
+
 
 
 # class UserSerializer(serializers.ModelSerializer):
