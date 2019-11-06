@@ -148,11 +148,13 @@ class CardDetail(viewsets.ViewSet):
     def get(self, request,**kwargs):        
         board_list = self.get_object(kwargs.get('card_id'))
         serializer = self.serializer_class(board_list)
+        
         return Response(serializer.data)
 
     def put(self, request,**kwargs):
         board_list = self.get_object(kwargs.get('card_id'))
         serializer = self.serializer_class(board_list, data=request.data)
+        
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -162,6 +164,9 @@ class CardDetail(viewsets.ViewSet):
         board_list = self.get_object(kwargs.get('card_id'))
         board_list.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    
+
 
 
 class UserViewSet(viewsets.ViewSet):
