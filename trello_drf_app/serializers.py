@@ -18,6 +18,7 @@ class ListSerializer(serializers.ModelSerializer):
         model = BoardList
         fields = ('id',
                   'title',
+                  'board',
                   'date_created')
 
 

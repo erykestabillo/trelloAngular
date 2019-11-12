@@ -71,7 +71,7 @@ class ListViewSet(viewsets.ViewSet):
     serializer_class = ListSerializer
     permission_classes = [IsAuthenticated] 
 
-    def get(self, request, **kwargs):        
+    def get(self, request, **kwargs):
         board_id = kwargs.get('board_id')
         board = get_object_or_404(Board, id=board_id)
         boardList = BoardList.objects.filter(board=board)
@@ -91,7 +91,8 @@ class ListViewSet(viewsets.ViewSet):
 
 class ListDetail(viewsets.ViewSet):
     serializer_class = ListSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated] 
+    
     def get_object(self, list_id):
         try:
             return BoardList.objects.get(id=list_id)
@@ -99,6 +100,7 @@ class ListDetail(viewsets.ViewSet):
             raise Http404
 
     def get(self, request,**kwargs):
+        
         board_list = self.get_object(kwargs.get('list_id'))        
         serializer = self.serializer_class(board_list)
         return Response(serializer.data)
@@ -106,6 +108,7 @@ class ListDetail(viewsets.ViewSet):
     def put(self, request,**kwargs):
         board_list = self.get_object(kwargs.get('list_id'))
         serializer = self.serializer_class(board_list, data=request.data)
+        
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -113,8 +116,12 @@ class ListDetail(viewsets.ViewSet):
 
     def delete(self, request, **kwargs):
         board_list = self.get_object(kwargs.get('list_id'))
-        board_list.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        if request.user.is_authenticated:
+            board_list.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+        
+        
 
 
 class CardViewSet(viewsets.ViewSet):
@@ -179,7 +186,7 @@ class UserViewSet(viewsets.ViewSet):
         if username is None or password is None:
             return Response({'error': 'Please provide both username and password'},
                             status=status.HTTP_400_BAD_REQUEST)
-        user = authenticate(username=username, password=password)
+        user = authenticate(request,username=username, password=password)
         
         if not user:
             return Response({'error': 'Invalid Credentials'},
