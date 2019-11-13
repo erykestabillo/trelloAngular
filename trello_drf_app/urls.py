@@ -13,7 +13,7 @@ urlpatterns = [
     path('board/<int:list_id>/card/', CardViewSet.as_view({'get': 'get','post':'post'}),name="card-list"),
     path('board/<int:list_id>/<int:card_id>/', CardDetail.as_view({'get':'get','put':'put','delete':'delete'}),name="card-detail"),
     path('board/list/<int:card_id>/delete/', CardDetail.as_view({'delete':'delete'}),name="card-delete"),
-    
+    path('logout/',UserViewSet.as_view({'get':'logout'}),name="login"),
     path('login/',UserViewSet.as_view({'post':'login'}),name="login"),
     path('register/',UserViewSet.as_view({'post':'create'}),name="register"),
     path('board/<int:board_id>/invite/', InviteMember.as_view({'post':'invite_member'}), name="inviteMember"),

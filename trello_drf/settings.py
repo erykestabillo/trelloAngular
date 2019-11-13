@@ -48,8 +48,9 @@ MIDDLEWARE = [
 #    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',    
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',    
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -166,23 +167,9 @@ CORS_ALLOW_METHODS = [
     'PUT',
 ]
 CORS_ALLOW_HEADERS = (
-'accept',
-'accept-encoding',
-'authorization',
-'content-type',
-'dnt',
-'origin',
-'user-agent',
-'x-csrftoken',
-'x-requested-with',
-'Access-Control-Allow-Origin',)
+    'authorization',
+    'content-type',
+    'x-csrftoken',
+    'x-requested-with',
+)
 
-CORS_ORIGIN_WHITELIST = (
-    
-     'http://localhost:3000',
-     'http://localhost:8000',
-     'http://localhost:8080',
-     'http://localhost:4200',
-     'http://192.168.1.17:8000',
-     'http://127.0.0.1:4200',
- )

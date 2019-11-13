@@ -12,7 +12,8 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from django.contrib.auth import authenticate
+from .permissions import IsOwnerOrReadOnly
+from django.contrib.auth import authenticate, login, logout
 from rest_framework.authtoken.models import Token
 from django.template.loader import render_to_string
 from django.shortcuts import get_object_or_404
@@ -26,7 +27,8 @@ class BoardViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated] 
 
     def get(self, request):
-        board = Board.objects.all()
+        
+        board = Board.objects.filter(user=request.user)
         serializer = self.serializer_class(board,many=True)          
         return Response(serializer.data)
     
@@ -178,9 +180,7 @@ class CardDetail(viewsets.ViewSet):
 
 class UserViewSet(viewsets.ViewSet):
     permission_classes = [AllowAny]
-    
-    def login(self,request):
-        
+    def login(self,request):        
         username = request.data.get("username")
         password = request.data.get("password")
         if username is None or password is None:
@@ -191,8 +191,14 @@ class UserViewSet(viewsets.ViewSet):
         if not user:
             return Response({'error': 'Invalid Credentials'},
                             status=status.HTTP_404_NOT_FOUND)
-        token, _ = Token.objects.get_or_create(user=user)        
+        token, _ = Token.objects.get_or_create(user=user)
+        login(request,user)
         return Response(token.key,status=status.HTTP_200_OK)
+
+    def logout(self,request):
+        request.user.auth_token.delete()
+        logout(request)
+        return Response(status=status.HTTP_200_OK)
     
     def create(self,request):
         serializer = UserSerializer(data=request.data)
@@ -207,12 +213,14 @@ class UserViewSet(viewsets.ViewSet):
 class InviteMember(viewsets.ViewSet):
     serializer_class = BoardInviteSerializer
     def invite_member(self,request,**kwargs):
+
         serializer = self.serializer_class(data=request.data)
         board = get_object_or_404(Board,id=kwargs.get("board_id"))
         user = request.user        
-        if (serializer.is_valid()):            
+        
+        if (serializer.is_valid()):
             serializer = serializer.save()
-            subject = 'CELERY IS LIT AF'
+            subject = 'ANGULAR IS... OKEH KEEYOH'
             message = ' '
             email_from = settings.EMAIL_HOST_USER
             recipient_list = [serializer.email,]
@@ -222,12 +230,14 @@ class InviteMember(viewsets.ViewSet):
                 'board':board,
                 'user': user.get_username(),
                 'uuid':serializer.uuid,
+                'scheme': request.scheme,
                 'domain': request.META['HTTP_HOST'],
+                'path': request.path
                 }
             )
             #task = invite_member.delay(subject, message, email_from, recipient_list, html_message)            
             send_mail( subject, message, email_from, recipient_list, html_message=html_message)
-            return Response(serializer, status=status.HTTP_201_CREATED)
+            return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
