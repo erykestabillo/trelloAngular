@@ -2,7 +2,7 @@ from django.urls import path, include
 from rest_framework.urlpatterns import format_suffix_patterns
 from trello_drf_app import views
 from rest_framework.authtoken import views as view
-from .views import BoardViewSet,BoardDetail,ListViewSet,ListDetail,CardViewSet,CardDetail,UserViewSet,InviteMember
+from .views import BoardViewSet,BoardDetail,ListViewSet,ListDetail,CardViewSet,CardDetail,UserViewSet,InviteMember,Members
 
 urlpatterns = [
     path('boards/', BoardViewSet.as_view({'get': 'get','post':'post'}),name="board-list"),
@@ -18,6 +18,7 @@ urlpatterns = [
     path('register/',UserViewSet.as_view({'post':'create'}),name="register"),
     path('board/<int:board_id>/invite/', InviteMember.as_view({'post':'invite_member'}), name="inviteMember"),
     path('board/<int:board_id>/accept/', InviteMember.as_view({'post':'create_member'}), name="createMember"),
+    path('board/<int:board_id>/members/', Members.as_view({'get':'get'}), name="createMember"),
     path('', views.api_root),
 
 ]

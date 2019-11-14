@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from .models import Board,BoardList,ListCard,BoardInvite
+from .models import Board,BoardList,ListCard,BoardInvite, BoardMembers
 from django.contrib.auth.models import User
+from rest_framework.fields import CurrentUserDefault
 
 class BoardSerializer(serializers.ModelSerializer):    
     user = serializers.CharField(read_only=True,source='user.username')    
@@ -56,3 +57,15 @@ class BoardInviteSerializer(serializers.ModelSerializer):
     class Meta:
         model = BoardInvite
         fields = ['email','board']
+
+class BoardMemberSerializer(serializers.ModelSerializer):
+    member = serializers.ReadOnlyField(source='member.username')
+    
+    class Meta:
+        model = BoardMembers
+        fields = ("__all__")
+
+    def create(self, validated_data):
+        import pdb; pdb.set_trace()
+        board_member, created = BoardMembers.objects.get_or_create(**validated_data)
+        return board_member

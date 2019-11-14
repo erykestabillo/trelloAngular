@@ -7,6 +7,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 from uuid import uuid4
+from django.contrib.auth.models import User
 
 # Create your models here.
 class Board(models.Model):
@@ -46,12 +47,12 @@ class ListCard(models.Model):
 class BoardInvite(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     board = models.ForeignKey(Board, on_delete=models.CASCADE)
-    email = models.EmailField(max_length=255,unique=True)
+    email = models.EmailField(max_length=255)
 
 
 
 class BoardMembers(models.Model):
-    member = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
+    member = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     board = models.ForeignKey(Board, on_delete=models.CASCADE)
     
     def __str__(self):

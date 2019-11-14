@@ -12,13 +12,13 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .permissions import IsOwnerOrReadOnly
+from .permissions import IsOwnerOrReadOnly, BoardMemberPermission
 from django.contrib.auth import authenticate, login, logout
 from rest_framework.authtoken.models import Token
 from django.template.loader import render_to_string
 from django.shortcuts import get_object_or_404
 from django.core.mail import send_mail
-from .serializers import BoardSerializer,ListSerializer, CardSerializer,UserSerializer,BoardInviteSerializer
+from .serializers import BoardSerializer,ListSerializer, CardSerializer,UserSerializer,BoardInviteSerializer, BoardMemberSerializer
 
 
 # Create your views here.
@@ -34,6 +34,7 @@ class BoardViewSet(viewsets.ViewSet):
     
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
+        
         if serializer.is_valid():
             serializer.save(user=request.user)
             serializer.save()
@@ -208,7 +209,15 @@ class UserViewSet(viewsets.ViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
+class Members(viewsets.ViewSet):
+    serializer_class = BoardMemberSerializer
 
+    def get(self, request, **kwargs):
+        board_id = kwargs.get('board_id')
+        board = get_object_or_404(Board,id=board_id)
+        board_members = BoardMembers.objects.filter(board=board)        
+        serializer = self.serializer_class(board_members, many=True)
+        return Response(serializer.data , status=200)
 
 class InviteMember(viewsets.ViewSet):
     serializer_class = BoardInviteSerializer
@@ -242,13 +251,24 @@ class InviteMember(viewsets.ViewSet):
 
 
     def create_member(self,request,**kwargs):
-        board = get_object_or_404(Board,id=kwargs.get("board_id"))
-        board_member, created = BoardMembers.objects.get_or_create(member=request.user,board=board)
-        if (created):
-            board_member.save()
-            return Response(board_member, status=status.HTTP_201_CREATED)      
-        else:
-            return Response(board_member, status=status.HTTP_400_BAD_REQUEST)
+        
+        serializer = BoardMemberSerializer(data=request.data)
+        
+        if (serializer.is_valid()):
+            serializer.save(member=request.user)
+            return Response (serializer.data, status=status.HTTP_201_CREATED)
+        
+
+
+
+        #board = get_object_or_404(Board,id=kwargs.get("board_id"))
+        
+        #board_member, created = BoardMembers.objects.get_or_create(member=request.user,board=board)
+        #if (created):
+        #    board_member.save()
+        #    return Response(status=status.HTTP_201_CREATED)      
+        #else:
+        #    return Response(status=status.HTTP_400_BAD_REQUEST)
             
             
 
