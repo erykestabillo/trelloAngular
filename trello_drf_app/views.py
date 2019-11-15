@@ -56,15 +56,15 @@ class BoardDetail(viewsets.ViewSet):
         serializer = self.serializer_class(board)        
         return Response(serializer.data)
 
-    def put(self, request, board_id):
-        board = self.get_object(board_id)
+    def put(self, request, **kwargs):
+        board = self.get_object(kwargs.get('board_id'))
         serializer = self.serializer_class(board, data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(user=request.user)
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, board_id):
+    def delete(self, request, **kwargs):
         board = self.get_object(board_id)
         board.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -134,8 +134,15 @@ class CardViewSet(viewsets.ViewSet):
     def get(self, request, **kwargs):
         list_id = kwargs.get('list_id')
         boardList = get_object_or_404(BoardList,id=list_id)
-        card = ListCard.objects.filter(board_list=boardList)
+        card = ListCard.objects.filter(board_list=boardList, is_archived=False)
         serializer = self.serializer_class(card,many=True)  
+        return Response(serializer.data)
+
+    def archive(self, request, **kwargs):
+        card = ListCard.objects.filter(is_archived=True)
+        serializer = self.serializer_class(card,many=True)
+        
+    
         return Response(serializer.data)
     
     def post(self, request, **kwargs):
@@ -174,6 +181,28 @@ class CardDetail(viewsets.ViewSet):
         board_list = self.get_object(kwargs.get('card_id'))
         board_list.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def archive(self,request,**kwargs):
+        
+        board_list = self.get_object(kwargs.get('card_id'))
+        serializer = self.serializer_class(board_list, data=request.data)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def restore(self,request,**kwargs):
+        
+        board_list = self.get_object(kwargs.get('card_id'))
+        serializer = self.serializer_class(board_list, data=request.data)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
     
 
