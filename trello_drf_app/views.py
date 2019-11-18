@@ -9,6 +9,7 @@ from rest_framework.reverse import reverse
 from .permissions import IsOwnerOrReadOnly
 from rest_framework import viewsets
 from rest_framework.views import APIView
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -134,14 +135,14 @@ class CardViewSet(viewsets.ViewSet):
     def get(self, request, **kwargs):
         list_id = kwargs.get('list_id')
         boardList = get_object_or_404(BoardList,id=list_id)
-        card = ListCard.objects.filter(board_list=boardList, is_archived=False)
+        card = ListCard.objects.filter(board_list=boardList, is_archived=False).order_by('index')
         serializer = self.serializer_class(card,many=True)  
         return Response(serializer.data)
 
     def archive(self, request, **kwargs):
-        card = ListCard.objects.filter(is_archived=True)
+        board_id = kwargs.get('board_id')
+        card = ListCard.objects.filter(board_list__board=board_id,is_archived=True)
         serializer = self.serializer_class(card,many=True)
-        
     
         return Response(serializer.data)
     

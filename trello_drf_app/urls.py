@@ -11,8 +11,8 @@ urlpatterns = [
     path('board/list/<int:list_id>/edit/', ListDetail.as_view({'get':'get','put':'put'}),name="list-detail"),
     path('board/list/delete/<int:list_id>/', ListDetail.as_view({'delete':'delete'}),name="list-delete"),
     path('board/<int:list_id>/card/', CardViewSet.as_view({'get': 'get','post':'post'}),name="card-list"),
-    path('board/list/card/archives/', CardViewSet.as_view({'get': 'archive'}),name="card-archive"),
-    
+    path('<int:board_id>/list/card/archives/', CardViewSet.as_view({'get': 'archive'}),name="card-archive"),
+    path('board/<int:list_id>/<int:card_id>/index/', CardDetail.as_view({'put':'put'}),name="card-index"),
     path('board/<int:list_id>/<int:card_id>/', CardDetail.as_view({'get':'get','put':'put','delete':'delete'}),name="card-detail"),
     path('board/list/<int:card_id>/delete/', CardDetail.as_view({'delete':'delete'}),name="card-delete"),
     path('board/list/<int:card_id>/archive/', CardDetail.as_view({'put':'archive'}),name="card-delete"),

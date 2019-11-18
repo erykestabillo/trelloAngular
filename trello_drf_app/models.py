@@ -38,7 +38,8 @@ class ListCard(models.Model):
     date_created = models.DateTimeField(default=timezone.now)
     board_list = models.ForeignKey(BoardList, on_delete=models.CASCADE)
     is_archived = models.BooleanField(default=False)
-    index = models.IntegerField(default=0)
+    updated_at = models.DateTimeField(auto_now=True)
+    index = models.FloatField(default=0.0)
     
     def __str__(self):
         return self.title
