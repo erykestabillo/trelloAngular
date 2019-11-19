@@ -6,14 +6,13 @@ from django.contrib.auth.models import User
 from rest_framework.decorators import api_view
 from rest_framework.response import Response 
 from rest_framework.reverse import reverse
-from .permissions import IsOwnerOrReadOnly
 from rest_framework import viewsets
 from rest_framework.views import APIView
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .permissions import IsOwnerOrReadOnly, BoardMemberPermission
+from .permissions import IsOwnerOrReadOnly, BoardMembersPermission
 from django.contrib.auth import authenticate, login, logout
 from rest_framework.authtoken.models import Token
 from django.template.loader import render_to_string
@@ -45,15 +44,15 @@ class BoardViewSet(viewsets.ViewSet):
 
 class BoardDetail(viewsets.ViewSet):
     serializer_class = BoardSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, BoardMembersPermission]
     def get_object(self, board_id):
         try:
             return Board.objects.get(id=board_id)
         except Board.DoesNotExist:
             raise Http404
 
-    def get(self, request, board_id):
-        board = self.get_object(board_id)
+    def get(self, request, **kwargs):        
+        board = self.get_object(kwargs.get('board_id'))
         serializer = self.serializer_class(board)        
         return Response(serializer.data)
 
@@ -64,6 +63,8 @@ class BoardDetail(viewsets.ViewSet):
             serializer.save(user=request.user)
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+       
 
     def delete(self, request, **kwargs):
         board = self.get_object(board_id)
@@ -283,7 +284,6 @@ class InviteMember(viewsets.ViewSet):
     def create_member(self,request,**kwargs):
         
         serializer = BoardMemberSerializer(data=request.data)
-        
         if (serializer.is_valid()):
             serializer.save(member=request.user)
             return Response (serializer.data, status=status.HTTP_201_CREATED)

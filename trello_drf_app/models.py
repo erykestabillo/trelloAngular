@@ -64,4 +64,8 @@ class BoardMembers(models.Model):
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
-        
+
+@receiver(post_save, sender=Board)
+def create_member(sender, instance, created, **kwargs):
+    if created:
+        BoardMembers.objects.create(board=instance, member=instance.user)
