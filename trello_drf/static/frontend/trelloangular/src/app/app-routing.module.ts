@@ -6,6 +6,7 @@ import { CreateboardComponent } from './components/createboard/createboard.compo
 import { BoarddetailComponent } from './components/boarddetail/boarddetail.component';
 import { RegisterComponent } from './components/register/register.component';
 import { AcceptInviteComponent } from './components/accept-invite/accept-invite.component';
+import { NopermissionComponent } from './components/nopermission/nopermission.component';
 
 const routes: Routes = [
                         {path: '', component: LoginComponent},
@@ -14,6 +15,7 @@ const routes: Routes = [
                         {path: 'createboard', component: CreateboardComponent},
                         {path: 'board/:id', component: BoarddetailComponent},
                         {path: 'board/:id/:uuid', component: AcceptInviteComponent},
+                        {path: 'error', component: NopermissionComponent},
                         ];
 
 @NgModule({

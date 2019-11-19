@@ -2,49 +2,7 @@
 <!-- B04533 -->
 <app-header [board]="board"></app-header>
 <div style="background-color: #B04533;">
-<ng-template #content let-modal>
-        <div class="modal-header">
-          <h4 class="modal-title" id="modal-basic-title">Add List</h4>
-          <button type="button"
-                  class="close"
-                  aria-label="Close"
-                  (click)="modal.dismiss('Cross click')"
-                  #closeModal
-                  >
-                  <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
 
-        <div class="modal-body">
-                <br>
-                <form [formGroup]="Listform" >            
-                    <input 
-                        formControlName="listTitle"
-                        class="form-control" 
-                        type="text"                
-                        name="listTitle"
-                        placeholder="List title"
-                        [ngClass]="{ 'is-invalid': submitted && listForm.listTitle.errors }"
-                    >
-                    <div *ngIf="submitted && listForm.listTitle.errors" class="text-danger">
-                        <small *ngIf="listForm.listTitle.errors.required">Title is required</small>
-                    </div>
-                    <br>
-                    <hr>
-                    <button type="submit"
-                            class="btn btn-outline-dark float-right mr-3"
-                            ngbAutofocus
-                            [disabled] ="!List"
-                            (click)="modal.dismiss(addList())"
-                            >
-                              Save
-                    </button>
-                    
-                    
-                </form>
-        </div>
-
-      </ng-template>
   
       
       <div>
@@ -75,6 +33,15 @@
                             <br>
                         </div>
                       </form>
+                      <div style="text-align: center;">
+                          <button class="btn btn-danger"
+                                  style="display: flex; width: 100%; padding-left: 80px;"
+                                  (click)="boardDelete(board.id)"
+                                  >
+                                  Delete Board
+                                </button>
+                      </div>
+                      
                   </div>
                   <div style="padding-top:10px;">
                     <h4  id="archives">Archives</h4>
@@ -102,11 +69,11 @@
                 <p><button class="btn" id="menu-btn"  mat-button type="button" (click)="sidenav.toggle()" (click)="clicked=false" (click)="archiveList()" (click)="boardSubmitted=false"  >Menu</button></p>
                 
                 
-                <button class="btn btn-outline-light m-3" (click)="open(content)">Add List</button>
+                
 
                 
                   <div cdkDropListGroup style="display: flex; overflow-x: auto; width: 100%; height: 80vh;" >
-                      <app-board-list #boardListCards class="col-sm-2 list-field" *ngFor = "let list of boardList" [boardList]="list">
+                      <app-board-list #boardListCards>
                           
                       </app-board-list>        
                   </div>

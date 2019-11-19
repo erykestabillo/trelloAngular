@@ -2,15 +2,17 @@ import { Injectable } from '@angular/core';
 import {HttpEvent,
         HttpInterceptor,
         HttpHandler,
-        HttpRequest, } from '@angular/common/http';
+        HttpRequest,
+        HttpErrorResponse, } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
-
+import { catchError } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class Interceptor implements HttpInterceptor {
 
-    constructor(private cookieService: CookieService) {}
+    constructor(private cookieService: CookieService, private router: Router) {}
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable <HttpEvent <any>> {
         const token = localStorage.getItem('Authorization');
@@ -29,8 +31,16 @@ export class Interceptor implements HttpInterceptor {
                             }
             });
 
-            return next.handle(request);
-            }
+            return next.handle(request).pipe(catchError(err => {
+                if (err instanceof HttpErrorResponse) {
+                    if (err.status === 404) {
+                        console.log('No permission!', err.status);
+                        this.router.navigate(['error']);
+                    }
+                    return new Observable<HttpEvent<any>>();
+                }
+
+            }));
 
         }
 
@@ -39,4 +49,4 @@ export class Interceptor implements HttpInterceptor {
 }
 
 
-
+}

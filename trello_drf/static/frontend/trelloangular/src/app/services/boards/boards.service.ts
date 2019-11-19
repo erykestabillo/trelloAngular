@@ -18,4 +18,9 @@ export class BoardsService {
     const data = {title};
     return this.http.put(url, data);
   }
+
+  deleteBoard(boardId): Observable<any> {
+    const url = `/api/board/${boardId}/`;
+    return this.http.delete(url);
+  }
 }

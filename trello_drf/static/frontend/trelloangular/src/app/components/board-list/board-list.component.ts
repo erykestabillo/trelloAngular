@@ -5,6 +5,8 @@ import { BoardListService } from '../../services/boardList/board-list.service';
 import { AddCardService } from '../../services/addCard/add-card.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { List } from '../../models/lists';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import { BoarddetailService } from '../../services/boarddetail/boarddetail.service';
 import { Card } from '../../models/cards';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 
@@ -16,10 +18,7 @@ import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag
   styleUrls: ['./board-list.component.css']
 })
 export class BoardListComponent implements OnInit {
-  @Input() boardList: List;
-  
-  listCards: Card[];
-
+  boardList: List[];
   is_open: boolean = false;
 
 
@@ -27,34 +26,72 @@ export class BoardListComponent implements OnInit {
     listTitle: new FormControl('', Validators.required),
   });
 
-  constructor(
+  Listform: FormGroup = new FormGroup({
+    listTitle: new FormControl('', Validators.required),
+  });
+  get listForm() { return this.Listform.controls; }
+  submitted = false;
+
+  constructor(private router: ActivatedRoute,
               private listCardsServerice: ListCardsService,
               private boardListService: BoardListService,
               private addCardService: AddCardService,
+              private modalService: NgbModal,
+              private boardDetailService: BoarddetailService,
               ) { }
 
   ngOnInit() {
+    const boardId = +this.router.snapshot.paramMap.get('id');
+    this.boardListService.boardList(boardId).subscribe(
+      listData => {
+        this.boardList = listData;
+      }
+    );
 
-    this.listCardsServerice.cardList(this.boardList.id).subscribe(
-      cardData => {
-        this.listCards = cardData;
+  }
 
+
+  open(content) {
+    this.modalService.open(content).result.then(
+      res => {
+      }, error => {
+        this.Listform.reset();
       }
     );
   }
 
 
 
+  addList(): void {
+    this.submitted = true;
+    const boardId = +this.router.snapshot.paramMap.get('id');
 
+    if (this.Listform.valid) {
+      this.boardDetailService.addList(this.Listform.value.listTitle, boardId).subscribe(
+        listData => {
+          this.boardList.push(listData);
+          this.Listform.reset();
 
-  editList(): void {
-    this.boardList.title = this.EditListForm.value.listTitle;
-    this.is_open = !this.is_open;
-    this.addCardService.editList(this.EditListForm.value.listTitle, this.boardList.board, this.boardList.id).subscribe();
+        }
+      );
+    }
   }
 
-  deleteList(): void {
-    this.boardListService.deleteList(this.boardList.id).subscribe();
+
+  editList(board, listId, index): void {
+    
+    this.is_open = !this.is_open;
+    this.addCardService.editList(this.EditListForm.value.listTitle, board, listId).subscribe(
+      data => {
+        this.boardList[index] = data;
+      }
+    );
+  }
+
+  deleteList(listId, index): void {
+    
+    this.boardListService.deleteList(listId).subscribe();
+    this.boardList.splice(index, 1);
     
   }
 
@@ -66,21 +103,6 @@ export class BoardListComponent implements OnInit {
   }
 
 
-  drop(event: CdkDragDrop<{}[]>) {
-
-    if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-
-    } else {
-      transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
-      this.listCardsServerice.cardDrag(event.item.data.title,
-                                      event.item.data.board_list,
-                                      this.boardList.id,
-                                      event.item.data.id,
-                                      ).subscribe();
-
-    }
-  }
 
 
 

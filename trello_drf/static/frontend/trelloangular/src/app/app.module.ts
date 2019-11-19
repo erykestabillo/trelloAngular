@@ -24,6 +24,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RegisterComponent } from './components/register/register.component';
 import { AcceptInviteComponent } from './components/accept-invite/accept-invite.component';
 import { PasswordResetComponent } from './components/password-reset/password-reset.component';
+import { NopermissionComponent } from './components/nopermission/nopermission.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { PasswordResetComponent } from './components/password-reset/password-res
     RegisterComponent,
     AcceptInviteComponent,
     PasswordResetComponent,
+    NopermissionComponent,
   ],
   imports: [
     BrowserModule,

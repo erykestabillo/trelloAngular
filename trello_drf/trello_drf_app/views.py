@@ -27,14 +27,14 @@ class BoardViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated] 
 
     def get(self, request):
-        
+        """Retrieves all the boards of the user"""
         board = Board.objects.filter(user=request.user)
         serializer = self.serializer_class(board,many=True)          
         return Response(serializer.data)
     
     def post(self, request):
+        """Add new board"""
         serializer = self.serializer_class(data=request.data)
-        
         if serializer.is_valid():
             serializer.save(user=request.user)
             serializer.save()
@@ -57,6 +57,7 @@ class BoardDetail(viewsets.ViewSet):
         return Response(serializer.data)
 
     def put(self, request, **kwargs):
+        """Edit board details"""
         board = self.get_object(kwargs.get('board_id'))
         serializer = self.serializer_class(board, data=request.data)
         if serializer.is_valid():
@@ -67,16 +68,18 @@ class BoardDetail(viewsets.ViewSet):
        
 
     def delete(self, request, **kwargs):
-        board = self.get_object(board_id)
+        """Permanently deletes the board"""
+        board = self.get_object(kwargs.get('board_id'))
         board.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class ListViewSet(viewsets.ViewSet):
     serializer_class = ListSerializer
-    permission_classes = [IsAuthenticated] 
+    permission_classes = [IsAuthenticated, BoardMembersPermission] 
 
     def get(self, request, **kwargs):
+        """Retrieves all the lists of a board instance"""
         board_id = kwargs.get('board_id')
         board = get_object_or_404(Board, id=board_id)
         boardList = BoardList.objects.filter(board=board)
@@ -84,7 +87,8 @@ class ListViewSet(viewsets.ViewSet):
         
         return Response(serializer.data, status=200)
     
-    def post(self, request, **kwargs):        
+    def post(self, request, **kwargs):   
+        """Add new list in a board"""
         serializer = self.serializer_class(data=request.data)
         
         if serializer.is_valid():
@@ -111,6 +115,7 @@ class ListDetail(viewsets.ViewSet):
         return Response(serializer.data)
 
     def put(self, request,**kwargs):
+        """Edit list details"""
         board_list = self.get_object(kwargs.get('list_id'))
         serializer = self.serializer_class(board_list, data=request.data)
         
@@ -120,6 +125,7 @@ class ListDetail(viewsets.ViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, **kwargs):
+        """Delete list permanently"""
         board_list = self.get_object(kwargs.get('list_id'))
         if request.user.is_authenticated:
             board_list.delete()
@@ -131,9 +137,10 @@ class ListDetail(viewsets.ViewSet):
 
 class CardViewSet(viewsets.ViewSet):
     serializer_class = CardSerializer
-    permission_classes = [IsAuthenticated]  
+    permission_classes = [IsAuthenticated, BoardMembersPermission]  
 
     def get(self, request, **kwargs):
+        """Retrieves all the cards in a list"""
         list_id = kwargs.get('list_id')
         boardList = get_object_or_404(BoardList,id=list_id)
         card = ListCard.objects.filter(board_list=boardList, is_archived=False).order_by('index')
@@ -141,6 +148,7 @@ class CardViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
     def archive(self, request, **kwargs):
+        """Retrieves all the archived cards"""
         board_id = kwargs.get('board_id')
         card = ListCard.objects.filter(board_list__board=board_id,is_archived=True)
         serializer = self.serializer_class(card,many=True)
@@ -148,6 +156,7 @@ class CardViewSet(viewsets.ViewSet):
         return Response(serializer.data)
     
     def post(self, request, **kwargs):
+        """Add new card"""
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()            
@@ -171,6 +180,7 @@ class CardDetail(viewsets.ViewSet):
         return Response(serializer.data)
 
     def put(self, request,**kwargs):
+        """Edit card details"""
         board_list = self.get_object(kwargs.get('card_id'))
         serializer = self.serializer_class(board_list, data=request.data)
         
@@ -180,12 +190,13 @@ class CardDetail(viewsets.ViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, **kwargs):
+        """Delete card"""
         board_list = self.get_object(kwargs.get('card_id'))
         board_list.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def archive(self,request,**kwargs):
-        
+        """Archive card"""
         board_list = self.get_object(kwargs.get('card_id'))
         serializer = self.serializer_class(board_list, data=request.data)
         
@@ -195,7 +206,7 @@ class CardDetail(viewsets.ViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def restore(self,request,**kwargs):
-        
+        """Restore card"""
         board_list = self.get_object(kwargs.get('card_id'))
         serializer = self.serializer_class(board_list, data=request.data)
         
@@ -209,10 +220,10 @@ class CardDetail(viewsets.ViewSet):
     
 
 
-
+"""User manager"""
 class UserViewSet(viewsets.ViewSet):
     permission_classes = [AllowAny]
-    def login(self,request):        
+    def login(self,request):
         username = request.data.get("username")
         password = request.data.get("password")
         if username is None or password is None:
@@ -240,6 +251,7 @@ class UserViewSet(viewsets.ViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
+"""Retrieves all the members of a board"""
 class Members(viewsets.ViewSet):
     serializer_class = BoardMemberSerializer
 
@@ -250,6 +262,7 @@ class Members(viewsets.ViewSet):
         serializer = self.serializer_class(board_members, many=True)
         return Response(serializer.data , status=200)
 
+"""Invitation email using smtp"""
 class InviteMember(viewsets.ViewSet):
     serializer_class = BoardInviteSerializer
     def invite_member(self,request,**kwargs):
@@ -288,20 +301,8 @@ class InviteMember(viewsets.ViewSet):
             serializer.save(member=request.user)
             return Response (serializer.data, status=status.HTTP_201_CREATED)
         
-
-
-
-        #board = get_object_or_404(Board,id=kwargs.get("board_id"))
-        
-        #board_member, created = BoardMembers.objects.get_or_create(member=request.user,board=board)
-        #if (created):
-        #    board_member.save()
-        #    return Response(status=status.HTTP_201_CREATED)      
-        #else:
-        #    return Response(status=status.HTTP_400_BAD_REQUEST)
             
             
-
 
 @api_view(['GET'])
 def api_root(request):

@@ -9,8 +9,8 @@ export class AddCardService {
 
   constructor(private http: HttpClient) { }
 
-  addCard(title, boardList): Observable<any> {
-    const cardUrl = '/api/board/' + boardList + '/card/';
+  addCard(board, title, boardList): Observable<any> {
+    const cardUrl = `/api/${board}/${boardList}/card/`;
     const cardData = {title, board_list: boardList};
     return this.http.post(cardUrl, cardData);
   }

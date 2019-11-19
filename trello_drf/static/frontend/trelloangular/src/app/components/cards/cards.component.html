@@ -4,11 +4,11 @@
 
 <li  class="list-group-item list-field" style="width: 100%; padding: 12px 16px; cursor: pointer;">    
 
-        <p *ngIf="!this.is_clicked" class="card">{{ card.title }}</p>
-        <form *ngIf="this.is_clicked"
+        <p class="card" style="z-index: 1; position:absolute">{{ card.title }}</p>
+        <form *ngIf="i == indx && this.is_clicked"
               [formGroup]="EditCardForm"
               (ngSubmit)="cardEdit(card.id, i)"
-              style="max-width: 180px; display: inline;" >
+              style="max-width: 180px; display: inline; position: absolute;z-index:2; margin-left: -10px; " >
                 <input 
                     formControlName="cardTitle"
                     class="form-control cardeditform" 
@@ -26,7 +26,7 @@
                 #popover = "ngbPopover"
                 class="far fa-edit edit"
                 [ngbPopover]="popContent"
-                (click)="editClick($event)"
+                (click)="editClick($event,i)"
                 style="background: none; border: 0; float: right;"
                 placement="right"
                 [autoClose]="true"

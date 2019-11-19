@@ -1,4 +1,5 @@
-<div style="text-align:center">
+<div class="registration">
+  <div style="text-align:center">
         <h1>
           Register To Trello
         </h1>
@@ -14,8 +15,16 @@
                 type="text" 
                 name="email"
                 placeholder="email"
+                ngModel
+                email
+                [ngClass]="{ 'is-invalid': submitted && f.email.errors }"
               >
-
+              <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                  <div *ngIf="f.email.errors.required">Email is required</div>
+                  <div *ngIf="f.email.errors.pattern">Email is invalid</div>
+             
+              </div>
+              <br>
               <input 
                 formControlName="username"
                 id="username-input"
@@ -23,10 +32,13 @@
                 type="text" 
                 name="username"
                 placeholder="username"
+                [ngClass]="{ 'is-invalid': submitted && f.username.errors }"
               >
-      
-              
-      
+              <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
+                  <div *ngIf="f.username.errors.required">Username is required</div>
+              </div>
+              <br>
+
               <input 
                 formControlName="password"
                 id="password-input" 
@@ -34,8 +46,25 @@
                 type="password" 
                 name="password"
                 placeholder="password"
+                [ngClass]="{ 'is-invalid': submitted && f.password.errors }"
               >
-              
+              <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                  <div *ngIf="f.password.errors.required">Password is required</div>
+              </div>
+              <br>
+              <input 
+                formControlName="confirmPassword"
+                class="form-control" 
+                type="password" 
+                name="confirmPassword"
+                placeholder="confirmPassword"
+                [ngClass]="{ 'is-invalid': submitted && f.confirmPassword.errors }"
+              >
+              <div *ngIf="submitted && f.confirmPassword.errors" class="invalid-feedback">
+                  <div *ngIf="f.confirmPassword.errors.required">Confirm Password is required</div>
+                  <div *ngIf="f.confirmPassword.errors.passwordMatch">Passwords must match</div>
+              </div>
+              <br>
               <button 
                 type="submit"
               >
@@ -46,3 +75,5 @@
     
       
         </div>
+
+</div>

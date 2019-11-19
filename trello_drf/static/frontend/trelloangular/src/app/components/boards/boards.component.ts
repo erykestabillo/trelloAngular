@@ -35,6 +35,7 @@ export class BoardsComponent implements OnInit {
         boardData => {
           this.boards.push(boardData);
           this.AddBoardForm.reset();
+          this.submitted = false;
         }
         );
     }

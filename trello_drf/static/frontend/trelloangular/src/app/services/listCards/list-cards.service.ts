@@ -11,8 +11,8 @@ export class ListCardsService {
   constructor(private http: HttpClient) { }
   
 
-  cardList(listId): Observable<any> {
-    let cardListUrl = `/api/board/${listId}/card/`;
+  cardList(boardId, listId): Observable<any> {
+    let cardListUrl = `/api/${boardId}/${listId}/card/`;
     return this.http.get(cardListUrl);
   }
 

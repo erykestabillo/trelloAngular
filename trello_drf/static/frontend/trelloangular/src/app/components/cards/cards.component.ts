@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Card } from '../../models/cards';
+import { ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ListCardsService } from '../../services/listCards/list-cards.service';
 import { ArchiveService } from '../../services/archive/archive.service';
@@ -19,7 +20,7 @@ export class CardsComponent implements OnInit {
   @Input() boardList: List;
   submitted = false;
   editSubmitted = false;
-
+  indx : number =0;
   public is_clicked: boolean = false;
   public popoverOpen: boolean = true;
 
@@ -33,13 +34,15 @@ export class CardsComponent implements OnInit {
   get cardForm() { return this.CardForm.controls; }
   get editCardForm() { return this.EditCardForm.controls; }
 
-  constructor(private listCardService: ListCardsService,
+  constructor(private router: ActivatedRoute,
+              private listCardService: ListCardsService,
               private archiveService: ArchiveService,
               private addCardService: AddCardService,
               ) { }
 
   ngOnInit() {
-    this.listCardService.cardList(this.boardList.id).subscribe(
+    const boardId = +this.router.snapshot.paramMap.get('id');
+    this.listCardService.cardList(boardId, this.boardList.id).subscribe(
       data => {
         this.cards = data;
       }
@@ -64,9 +67,17 @@ ngAfterContentChecked(): void {
 
 
 
-  editClick(event): void {
+  editClick(event, index): void {
     event.preventDefault();
-    this.is_clicked = !this.is_clicked;
+
+    if (this.indx === index && this.is_clicked) {
+      this.indx = null;
+      this.is_clicked = false;
+    } else {
+      this.indx = index;
+      this.is_clicked = true;
+
+    }
 
   }
   popoverClose(popover) {
@@ -83,6 +94,7 @@ ngAfterContentChecked(): void {
       this.listCardService.cardEdit(this.EditCardForm.value.cardTitle, this.boardList.id, cardId).subscribe(
         data => {
           this.cards[index] = data;
+          this.editSubmitted = false;
         }
       );
     }
@@ -106,10 +118,9 @@ ngAfterContentChecked(): void {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       let i = 0;
       for (const index of event.container.data) {
-        console.log(index)
         this.listCardService.cardUpdate(index["title"],
-          index["board_list"],
-          index["id"], i).subscribe();
+                                        this.boardList.id,
+                                        index["id"], i).subscribe();
         i++;
       }
 
@@ -123,8 +134,8 @@ ngAfterContentChecked(): void {
       let i = 0;
       for (const index of event.container.data) {
         this.listCardService.cardUpdate(index['title'],
-        this.boardList.id,
-          index['id'], i).subscribe();
+                                        this.boardList.id,
+                                        index['id'], i).subscribe();
         i++;
       }
     }
@@ -132,17 +143,19 @@ ngAfterContentChecked(): void {
   }
 
   addCard(): void {
+    const boardId = +this.router.snapshot.paramMap.get('id');
     this.submitted = true;
     if (this.CardForm.valid) {
-      this.addCardService.addCard(this.CardForm.value.cardTitle, this.boardList.id).subscribe(
+      this.addCardService.addCard(boardId, this.CardForm.value.cardTitle, this.boardList.id).subscribe(
         cardData => {
           this.cards.push(cardData);
           this.CardForm.reset();
+          this.submitted = false;
         }
       );
 
     }
-    
+
   }
 
 }

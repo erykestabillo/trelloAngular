@@ -18,9 +18,10 @@ export class BoarddetailService {
   }
 
   addList(title, board): Observable<any> {
-    const listUrl = '/api/board/' + board.id + '/list/';
-    const listData = {title, board: board.id};
+    const listUrl = '/api/board/' + board + '/list/';
+    const listData = {title, board};
     return this.http.post(listUrl, listData);
   }
+
 
 }
