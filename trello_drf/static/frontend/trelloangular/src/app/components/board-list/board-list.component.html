@@ -1,0 +1,52 @@
+
+<!-- #EBEBF0 -->
+<li class="list-group-item"
+    style="background-color: rgb(231, 231, 231); "
+    >
+    <div class="row">
+        <div class="col-sm-10" >
+            <a *ngIf="!this.is_open" (click)="titleClick($event)" style="color: black; display: flex; cursor: text;" >{{ boardList.title }}</a>
+            
+            <form  [formGroup]="EditListForm" (ngSubmit)="editList()">            
+                    <input 
+                        *ngIf="this.is_open"
+                        formControlName="listTitle"
+                        class="form-control" 
+                        type="text"                
+                        name="listTitle"
+                        value="{{ boardList.title }}"
+                    >   
+            </form>
+        </div>
+
+        <div class="col-sm-2">  
+            <button id="deleteButton"
+                    *ngIf="!this.is_open"
+                    (click)="deleteList()"
+                    class=" far fa-trash-alt"
+                    style="background: none; border: 0;  padding: 0px 0px;">
+            </button>
+            <button 
+                    *ngIf="this.is_open"
+                    type="button"
+                    style="background: none; border: 0; color:rgb(82, 80, 80); padding: 0px 0px;"
+                    class="mt-2"
+                    (click)="titleClick($event)"
+                    >
+                    <i class="fas fa-times" aria-hidden="true" ></i>
+            </button>
+        </div>
+    </div>
+</li>
+
+   
+        <app-cards class="card-field"  [boardList]="boardList">
+        </app-cards>
+        
+
+
+
+
+
+
+

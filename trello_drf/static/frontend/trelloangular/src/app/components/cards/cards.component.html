@@ -1,0 +1,67 @@
+
+<div class="cardContainer" cdkDropList [cdkDropListData]="cards" (cdkDropListDropped)="drop($event)">
+<div class="droplist" cdkDrag [cdkDragData]="card" *ngFor="let card of cards; let i = index">
+
+<li  class="list-group-item list-field" style="width: 100%; padding: 12px 16px; cursor: pointer;">    
+
+        <p *ngIf="!this.is_clicked" class="card">{{ card.title }}</p>
+        <form *ngIf="this.is_clicked"
+              [formGroup]="EditCardForm"
+              (ngSubmit)="cardEdit(card.id, i)"
+              style="max-width: 180px; display: inline;" >
+                <input 
+                    formControlName="cardTitle"
+                    class="form-control cardeditform" 
+                    type="text"                
+                    name="cardTitle"
+                    value="{{ card.title }}"
+                    [ngClass]="{ 'is-invalid': editSubmitted && editCardForm.cardTitle.errors }"
+                >
+                <div *ngIf="editSubmitted && editCardForm.cardTitle.errors" class="invalid-feedback">
+                        <small *ngIf="editCardForm.cardTitle.errors.required">This field is required</small>
+                </div>  
+        </form>
+        <div id="bttn" style="padding: 0px; display: inline;">
+        <button type="button"
+                #popover = "ngbPopover"
+                class="far fa-edit edit"
+                [ngbPopover]="popContent"
+                (click)="editClick($event)"
+                style="background: none; border: 0; float: right;"
+                placement="right"
+                [autoClose]="true"
+        >
+        </button>
+        </div>
+        <ng-template #popContent >
+                <button  class="far fa-file-archive"
+                        (click)="popoverClose(popover)"
+                        (click)="is_clicked=false"
+                        (click)="cardArchive(card.title, card.board_list, card.id, i)"
+                        
+                        style="background:transparent; border: none;"
+                        >
+                        Archive
+                </button>
+        </ng-template>
+
+</li>
+</div>
+</div>
+
+
+<li class="list-group-item">
+                <form [formGroup]="CardForm" (ngSubmit)="addCard()">            
+                    <input 
+                        formControlName="cardTitle"
+                        class="form-control" 
+                        type="text"                
+                        name="cardTitle"
+                        placeholder="New Card"
+                        [ngClass]="{ 'is-invalid': submitted && cardForm.cardTitle.errors }"
+                    >        
+                    <div *ngIf="submitted && cardForm.cardTitle.errors" class="text-danger">
+                         <small *ngIf="cardForm.cardTitle.errors.required">This field is required</small>
+                    </div>                             
+                </form>
+            </li>
