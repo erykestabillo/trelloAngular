@@ -1,0 +1,36 @@
+<app-header></app-header>
+<div class="container">
+    <h1>Personal Boards</h1>
+    <div class="col-3">
+        <ul class="list-group">
+            <div *ngFor="let board of boards" class="mb-3">
+            <li routerLink="/board/{{ board.id }}"
+                class="list-group-item"
+                style="background-color: #963A29; color: white; cursor: pointer; height: 60px;"
+                >
+                {{ board.title }}
+            </li>    
+            </div>
+        </ul>
+        <form [formGroup]="AddBoardForm" (ngSubmit)="createBoard()">                
+                <input 
+                    formControlName="title"
+                    class="form-control" 
+                    type="text"                
+                    name="title"                    
+                    placeholder="Add new board"
+                    style="border-color: #953A2B; border-style: solid; border-width: 3px;height: 40px;"
+                    [ngClass]="{ 'is-invalid': submitted && f.title.errors }"
+                >
+                <div *ngIf="submitted && f.title.errors" class="text-danger">
+                        <small *ngIf="f.title.errors.required">Title is required</small>
+                </div>
+          </form>
+
+       
+        
+    </div>
+    
+    
+</div>
+

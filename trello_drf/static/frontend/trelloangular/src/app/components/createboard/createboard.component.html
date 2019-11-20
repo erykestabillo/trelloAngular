@@ -1,0 +1,28 @@
+<div>
+    <h1>
+      Create Board:
+    </h1>
+      <form 
+        [formGroup]="form"  
+        (ngSubmit)="createBoard()" 
+        method="post"
+        id="login-form"
+      > 
+  
+          <input 
+            formControlName="boardTitle"
+            class="form-control" 
+            type="text" 
+            name="boardTitles"
+            placeholder="title"
+          >
+          
+          <button 
+            type="submit"
+          >
+            create board
+          </button>
+      </form>
+
+      
+  </div>

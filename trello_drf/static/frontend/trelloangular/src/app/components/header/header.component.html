@@ -1,0 +1,65 @@
+<!-- 953A2B -->
+<nav class="navbar navbar-expand-lg"
+     style="background-color: #953A2B;">  
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link"
+           routerLink="/boards/"
+           id="home"
+           >
+           Home
+          </a>
+      </li>
+
+      <li *ngIf="board" class="nav-item" style="padding-right: 3px;">
+     
+            <div ngbDropdown class="d-inline-block">
+              <button class="btn "
+                      id="dropdownBasic1"
+                      ngbDropdownToggle
+                      (click)="members()"
+                      >
+
+                      Members
+
+                    </button>
+
+              <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+                <div *ngFor="let mmbr of boardMembers" >
+                <span ngbDropdownItem class="list-group-item" style="max-height: 45px;" >
+                      {{ mmbr.member }}
+                </span>                
+              </div>
+              </div>
+            </div>
+
+      </li>
+
+      <li *ngIf="board" class="nav-item">
+          <form [formGroup]="InviteMemberForm" (ngSubmit)="sendEmail()">                
+              <input 
+                  formControlName="email"
+                  class="form-control" 
+                  type="email"                
+                  name="email"
+                  value="Enter email"
+                  placeholder="Invite member"
+                  [ngClass]="{ 'is-invalid': submitted && f.email.errors }"
+              >
+              <div *ngIf="submitted && f.email.errors" class="text-danger">
+                  <small *ngIf="f.email.errors.required" style="color: white; display: inline;">This field is required</small>
+              </div> 
+        </form>
+      </li>
+
+      <li class="nav-item">
+        <a id="logout" class="nav-link" (click)="logout()">Logout</a>
+      </li>
+
+  
+
+
+    </ul>
+  </div>
+</nav>

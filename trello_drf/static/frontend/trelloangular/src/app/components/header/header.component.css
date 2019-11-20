@@ -1,0 +1,52 @@
+.form-control {
+  max-height: 34px;
+  background: rgba(255, 255, 255, 0.4);
+  border: none;
+  margin-top: 3px;
+  
+}
+
+::placeholder {
+  color:  rgba(255, 255, 255, 0.8);
+}
+
+.form-control:focus.form-control:hover {
+  background: white;
+}
+.form-control:focus {
+  background: white;
+}
+
+.form-control:hover {
+  background:  rgba(255, 255, 255, 0.5);
+}
+
+
+.nav-link:hover {
+  color: white;
+}
+
+#logout {
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+}
+
+#logout:hover {
+  color: white;
+}
+
+#dropdownBasic1:hover {
+  color: white;
+}
+
+#home:hover {
+  color: white;  
+}
+
+#home {
+  color: rgba(255, 255, 255, 0.8); cursor:pointer;
+}
+
+#dropdownBasic1 {
+  color: rgba(255, 255, 255, 0.8); cursor:pointer;
+}

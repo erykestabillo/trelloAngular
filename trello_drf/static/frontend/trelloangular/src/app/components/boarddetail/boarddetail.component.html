@@ -1,0 +1,88 @@
+
+<!-- B04533 -->
+<app-header [board]="board"></app-header>
+<div style="background-color: #B04533;">
+
+  
+      
+      <div>
+        <mat-sidenav-container autosize class="example-container" (backdropClick)="close('backdrop')" >
+            <mat-sidenav  id="content" class="example-sidenav" (keydown.escape)="close('escape')"  #sidenav mode="side">
+              <div *ngIf="board">
+                <h6 style="padding: 5px;">Title:</h6>
+                <div class="modal-title" id="title">
+                    <h4 *ngIf="!clicked"
+                        (click)="titleClick($event)"
+                    >
+                        {{ board.title }}
+                    </h4>
+
+                    <form  [formGroup]="EditBoardForm" (ngSubmit)="editBoard()">            
+                        <input 
+                            *ngIf="clicked"
+                            formControlName="boardTitle"
+                            class="form-control" 
+                            type="text"                
+                            name="boardTitle"
+                            value="{{ board.title }}"
+                            style="color: black;"
+                            [ngClass]="{ 'is-invalid': boardSubmitted && editBoardForm.boardTitle.errors }"
+                        >
+                        <div *ngIf="boardSubmitted && editBoardForm.boardTitle.errors" class="text-danger">
+                            <small *ngIf="editBoardForm.boardTitle.errors.required">Title is required</small>
+                            <br>
+                        </div>
+                      </form>
+                      <div style="text-align: center;">
+                          <button class="btn btn-danger"
+                                  style="display: flex; width: 100%; padding-left: 80px;"
+                                  (click)="boardDelete(board.id)"
+                                  >
+                                  Delete Board
+                                </button>
+                      </div>
+                      
+                  </div>
+                  <div style="padding-top:10px;">
+                    <h4  id="archives">Archives</h4>
+                      <div id="archiveContainer">
+                        <div *ngFor="let card of archives; let i = index">
+                            <ul class="list-group">
+                              <div class="list-group-item" style="display: inline;">
+                                {{ card.title }}
+                                <div class="fas fa-trash-alt" (click)="cardDelete(card.id, i)" style="display: inline; float: right; background: none; cursor: pointer;"></div>
+                                <div class="fas fa-trash-restore" (click)="restoreCard(card.title, card.board_list, card.id, i)" style="display: inline; float: right; background: none; cursor: pointer; margin-right: 10px;"></div>
+                              </div>
+                            </ul>
+                          </div>
+                      </div>
+                  </div>
+                    
+              
+
+              
+            </div>
+            </mat-sidenav>
+      
+
+            <mat-sidenav-content class="example-sidenav-content" >
+                <p><button class="btn" id="menu-btn"  mat-button type="button" (click)="sidenav.toggle()" (click)="clicked=false" (click)="archiveList()" (click)="boardSubmitted=false"  >Menu</button></p>
+                
+                
+                
+
+                
+                  <div cdkDropListGroup style="display: flex; overflow-x: auto; width: 100%; height: 80vh;" >
+                      <app-board-list #boardListCards>
+                          
+                      </app-board-list>        
+                  </div>
+
+
+              </mat-sidenav-content>
+      
+        </mat-sidenav-container>
+    </div>
+      
+</div>
+

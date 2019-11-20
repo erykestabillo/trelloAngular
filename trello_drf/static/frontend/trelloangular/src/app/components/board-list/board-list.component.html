@@ -1,0 +1,107 @@
+<button class="btn btn-outline-light m-3" (click)="open(content)">Add List</button>
+
+<ng-template #content let-modal>
+        <div class="modal-header">
+          <h4 class="modal-title" id="modal-basic-title">Add List</h4>
+          <button type="button"
+                  class="close"
+                  aria-label="Close"
+                  (click)="modal.dismiss('Cross click')"
+                  #closeModal
+                  >
+                  <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+                <br>
+                <form [formGroup]="Listform" >            
+                    <input 
+                        formControlName="listTitle"
+                        class="form-control" 
+                        type="text"                
+                        name="listTitle"
+                        placeholder="List title"
+                        [ngClass]="{ 'is-invalid': submitted && listForm.listTitle.errors }"
+                    >
+                    <div *ngIf="submitted && listForm.listTitle.errors" class="text-danger">
+                        <small *ngIf="listForm.listTitle.errors.required">Title is required</small>
+                    </div>
+                    <br>
+                    <hr>
+                    <button type="submit"
+                            class="btn btn-outline-dark float-right mr-3"
+                            ngbAutofocus
+                            [disabled] ="!Listform.valid"
+                            (click)="modal.dismiss(addList())"
+                            >
+                              Save
+                    </button>
+                    
+                    
+                </form>
+        </div>
+
+      </ng-template>
+
+
+
+
+<div style="display: flex;">
+<div *ngFor="let list of boardList; let i=index" class="list-div" style="margin-left: 20px;">
+<li class="list-group-item"
+    style="background-color: rgb(231, 231, 231);"
+    >
+    <div class="row">
+        <div class="col-sm-10" >
+            <a
+               (click)="titleClick($event,i)"
+               style="color: black; width:100%; cursor: text; position:absolute;"
+               >
+               {{ list.title }}
+            </a>
+            
+            <form  [formGroup]="EditListForm" (ngSubmit)="editList(list.board,list.id,i)"
+                   style="position: absolute;">            
+                    <input 
+                        *ngIf="i == indx && this.is_open"
+                        formControlName="listTitle"
+                        class="form-control" 
+                        type="text"                
+                        name="listTitle"
+                        value="{{ list.title }}"
+                    >   
+            </form>
+        </div>
+
+        <div class="col-sm-2">  
+            <button id="deleteButton"
+                    *ngIf="!this.is_open"
+                    (click)="deleteList(list.id,i)"
+                    class=" far fa-trash-alt"
+                    style="background: none; border: 0;  padding: 0px 0px;">
+            </button>
+            <button 
+                    *ngIf="i == indx && this.is_open"
+                    type="button"
+                    style="background: none; border: 0; color:rgb(82, 80, 80); padding: 0px 0px;"
+                    class="mt-2"
+                    (click)="titleClick($event,i)"
+                    >
+                    <i class="fas fa-times" aria-hidden="true" ></i>
+            </button>
+            <button *ngIf="i != indx && this.is_open" style="background: none; border: none;"></button>
+        </div>
+    </div>
+</li>
+
+   
+        <app-cards class="card-field"  [boardList]="list">
+        </app-cards>
+        
+
+
+</div>
+
+</div>
+
