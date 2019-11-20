@@ -7,10 +7,14 @@ import { BoarddetailComponent } from './components/boarddetail/boarddetail.compo
 import { RegisterComponent } from './components/register/register.component';
 import { AcceptInviteComponent } from './components/accept-invite/accept-invite.component';
 import { NopermissionComponent } from './components/nopermission/nopermission.component';
+import { PasswordResetComponent } from './components/password-reset/password-reset.component';
+import { PasswordConfirmComponent } from './components/password-confirm/password-confirm.component';
 
 const routes: Routes = [
                         {path: '', component: LoginComponent},
                         {path: 'register', component: RegisterComponent},
+                        {path: 'reset', component: PasswordResetComponent},
+                        {path: 'reset/:uid/:token', component: PasswordConfirmComponent},
                         {path: 'boards', component: BoardsComponent},
                         {path: 'createboard', component: CreateboardComponent},
                         {path: 'board/:id', component: BoarddetailComponent},

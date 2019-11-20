@@ -3,6 +3,8 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from trello_drf_app import views
 from rest_framework.authtoken import views as view
 from .views import BoardViewSet,BoardDetail,ListViewSet,ListDetail,CardViewSet,CardDetail,UserViewSet,InviteMember,Members
+from django.contrib.auth.views import PasswordResetView
+from django.views.decorators.csrf import csrf_exempt
 
 urlpatterns = [
     path('boards/', BoardViewSet.as_view({'get': 'get','post':'post'}),name="board-list"),
@@ -20,6 +22,7 @@ urlpatterns = [
     path('logout/',UserViewSet.as_view({'get':'logout'}),name="login"),
     path('login/',UserViewSet.as_view({'post':'login'}),name="login"),
     path('register/',UserViewSet.as_view({'post':'create'}),name="register"),
+    path('password-reset/',PasswordResetView.as_view(),name="register"),
     path('board/<int:board_id>/invite/', InviteMember.as_view({'post':'invite_member'}), name="inviteMember"),
     path('board/<int:board_id>/accept/', InviteMember.as_view({'post':'create_member'}), name="createMember"),
     path('board/<int:board_id>/members/', Members.as_view({'get':'get'}), name="createMember"),

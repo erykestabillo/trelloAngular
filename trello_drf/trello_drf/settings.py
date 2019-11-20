@@ -41,11 +41,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',    
     'rest_framework',
     'rest_framework.authtoken',
-    'corsheaders'
+    'corsheaders',
+    'rest_auth'
 ]
 
 MIDDLEWARE = [
-#    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',    
     'corsheaders.middleware.CorsMiddleware',

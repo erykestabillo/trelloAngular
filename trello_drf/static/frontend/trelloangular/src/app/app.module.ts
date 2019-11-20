@@ -25,6 +25,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { AcceptInviteComponent } from './components/accept-invite/accept-invite.component';
 import { PasswordResetComponent } from './components/password-reset/password-reset.component';
 import { NopermissionComponent } from './components/nopermission/nopermission.component';
+import { PasswordConfirmComponent } from './components/password-confirm/password-confirm.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { NopermissionComponent } from './components/nopermission/nopermission.co
     AcceptInviteComponent,
     PasswordResetComponent,
     NopermissionComponent,
+    PasswordConfirmComponent,
   ],
   imports: [
     BrowserModule,

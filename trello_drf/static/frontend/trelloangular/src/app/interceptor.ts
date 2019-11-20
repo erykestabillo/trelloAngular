@@ -11,12 +11,11 @@ import { Router } from '@angular/router';
 
 @Injectable()
 export class Interceptor implements HttpInterceptor {
-
+    
     constructor(private cookieService: CookieService, private router: Router) {}
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable <HttpEvent <any>> {
         const token = localStorage.getItem('Authorization');
-
         if ( token == null ) {
             request = request.clone({
                 headers: request.headers.set('X-CSRFToken', this.cookieService.get('csrftoken'))
@@ -36,6 +35,8 @@ export class Interceptor implements HttpInterceptor {
                     if (err.status === 404) {
                         console.log('No permission!', err.status);
                         this.router.navigate(['error']);
+                    } else if (err.status === 400) {
+                        console.log('link already used', err.status);
                     }
                     return new Observable<HttpEvent<any>>();
                 }

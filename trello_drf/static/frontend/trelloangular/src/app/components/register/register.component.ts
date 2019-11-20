@@ -58,7 +58,7 @@ export class RegisterComponent implements OnInit {
         } else {
             matchingControl.setErrors(null);
         }
-    }
+    };
 }
 
 }

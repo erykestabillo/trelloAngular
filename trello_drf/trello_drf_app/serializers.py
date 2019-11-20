@@ -3,6 +3,7 @@ from .models import Board,BoardList,ListCard,BoardInvite, BoardMembers
 from django.contrib.auth.models import User
 from rest_framework.fields import CurrentUserDefault
 
+
 class BoardSerializer(serializers.ModelSerializer):    
     user = serializers.CharField(read_only=True,source='user.username')    
     class Meta:
@@ -29,13 +30,6 @@ class CardSerializer(serializers.ModelSerializer):
         model = ListCard
         fields = ("__all__")
 
-
-
-# class UserSerializer(serializers.ModelSerializer):
-#     boards = serializers.PrimaryKeyRelatedField(many=True, queryset=Board.objects.all())
-#     class Meta:
-#         model = User
-#         fields = ('id', 'username','boards')
 
 
 

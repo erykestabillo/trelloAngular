@@ -19,6 +19,7 @@ from django.template.loader import render_to_string
 from django.shortcuts import get_object_or_404
 from django.core.mail import send_mail
 from .serializers import BoardSerializer,ListSerializer, CardSerializer,UserSerializer,BoardInviteSerializer, BoardMemberSerializer
+from django.views.decorators.csrf import csrf_exempt
 
 
 # Create your views here.
@@ -301,8 +302,7 @@ class InviteMember(viewsets.ViewSet):
             serializer.save(member=request.user)
             return Response (serializer.data, status=status.HTTP_201_CREATED)
         
-            
-            
+
 
 @api_view(['GET'])
 def api_root(request):
