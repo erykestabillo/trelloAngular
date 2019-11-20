@@ -20,7 +20,7 @@ import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag
 export class BoardListComponent implements OnInit {
   boardList: List[];
   is_open: boolean = false;
-
+   indx : number =0;
 
   EditListForm: FormGroup = new FormGroup({
     listTitle: new FormControl('', Validators.required),
@@ -97,9 +97,17 @@ export class BoardListComponent implements OnInit {
 
   
 
-  titleClick(event): void {
+  titleClick(event,index): void {
     event.preventDefault();
-    this.is_open = !this.is_open;
+    if (this.indx === index && this.is_open) {
+      this.indx = null;
+      this.is_open = false;
+
+    } else {
+      this.indx = index;
+      this.is_open = true;
+
+    }
   }
 
 

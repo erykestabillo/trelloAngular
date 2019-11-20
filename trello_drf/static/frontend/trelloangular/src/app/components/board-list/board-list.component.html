@@ -46,24 +46,25 @@
 
 
 
-<!-- #EBEBF0 -->
+
 <div style="display: flex;">
 <div *ngFor="let list of boardList; let i=index" class="list-div" style="margin-left: 20px;">
 <li class="list-group-item"
-    style="background-color: rgb(231, 231, 231); "
+    style="background-color: rgb(231, 231, 231);"
     >
     <div class="row">
         <div class="col-sm-10" >
-            <a *ngIf="!this.is_open"
-               (click)="titleClick($event)"
-               style="color: black; display: flex; cursor: text;"
+            <a
+               (click)="titleClick($event,i)"
+               style="color: black; width:100%; cursor: text; position:absolute;"
                >
                {{ list.title }}
             </a>
             
-            <form  [formGroup]="EditListForm" (ngSubmit)="editList(list.board,list.id,i)">            
+            <form  [formGroup]="EditListForm" (ngSubmit)="editList(list.board,list.id,i)"
+                   style="position: absolute;">            
                     <input 
-                        *ngIf="this.is_open"
+                        *ngIf="i == indx && this.is_open"
                         formControlName="listTitle"
                         class="form-control" 
                         type="text"                
@@ -81,14 +82,15 @@
                     style="background: none; border: 0;  padding: 0px 0px;">
             </button>
             <button 
-                    *ngIf="this.is_open"
+                    *ngIf="i == indx && this.is_open"
                     type="button"
                     style="background: none; border: 0; color:rgb(82, 80, 80); padding: 0px 0px;"
                     class="mt-2"
-                    (click)="titleClick($event)"
+                    (click)="titleClick($event,i)"
                     >
                     <i class="fas fa-times" aria-hidden="true" ></i>
             </button>
+            <button *ngIf="i != indx && this.is_open" style="background: none; border: none;"></button>
         </div>
     </div>
 </li>

@@ -1,14 +1,15 @@
 
 <div class="cardContainer" cdkDropList [cdkDropListData]="cards" (cdkDropListDropped)="drop($event)">
+<li class="list-group-item" style="padding: 0px;"></li>
 <div class="droplist" cdkDrag [cdkDragData]="card" *ngFor="let card of cards; let i = index">
 
-<li  class="list-group-item list-field" style="width: 100%; padding: 12px 16px; cursor: pointer;">    
-
-        <p class="card" style="z-index: 1; position:absolute">{{ card.title }}</p>
+<li  class="list-group-item list-field" style="width: 100%; padding: 12px 0px; cursor: pointer; ">    
+        <div class="col-sm-10" >
+        <p class="card" style="z-index: 1; position:absolute;">{{ card.title }}</p>
         <form *ngIf="i == indx && this.is_clicked"
               [formGroup]="EditCardForm"
               (ngSubmit)="cardEdit(card.id, i)"
-              style="max-width: 180px; display: inline; position: absolute;z-index:2; margin-left: -10px; " >
+              style="display: inline; position: absolute;z-index:2; margin-left: -10px; " >
                 <input 
                     formControlName="cardTitle"
                     class="form-control cardeditform" 
@@ -21,7 +22,8 @@
                         <small *ngIf="editCardForm.cardTitle.errors.required">This field is required</small>
                 </div>  
         </form>
-        <div id="bttn" style="padding: 0px; display: inline;">
+        </div>
+        <div id="bttn" class="col-sm-2" style="padding: 0px; display: inline;">
         <button type="button"
                 #popover = "ngbPopover"
                 class="far fa-edit edit"
